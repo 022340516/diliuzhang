@@ -1,0 +1,145 @@
+# 数据可视化综合展示平台 - Git忽略文件
+
+# 操作系统生成文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# 编辑器和IDE文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.netrwhist
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+
+# 依赖目录
+node_modules/
+bower_components/
+jspm_packages/
+
+# 缓存文件
+.npm
+.eslintcache
+.stylelintcache
+
+# 构建输出
+dist/
+build/
+out/
+*.min.js
+*.min.css
+
+# 日志文件
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 环境变量文件
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 临时文件
+*.tmp
+*.temp
+.cache/
+.temp/
+
+# 压缩文件
+*.zip
+*.tar.gz
+*.rar
+
+# 备份文件
+*.bak
+*.backup
+
+# 本地配置文件
+config.local.js
+config.local.json
+
+# 测试覆盖率报告
+coverage/
+*.lcov
+
+# 依赖锁定文件（如果不需要版本控制）
+package-lock.json
+yarn.lock
+
+# Jupyter Notebook检查点
+.ipynb_checkpoints/
+*.ipynb
+
+# Python相关
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# R语言相关
+.Rhistory
+.RData
+.Ruserdata
+
+# SAS文件
+*.sas7bdat
+
+# LaTeX辅助文件
+*.aux
+*.log
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# 数据文件（如果是敏感或大数据）
+*.csv
+*.xlsx
+*.xls
+*.json.bak
+data/*.csv
+data/*.json
+
+# 可执行文件
+*.exe
+*.dmg
+*.pkg
+*.deb
+*.rpm
+
+# 特定于项目的忽略
+# 如果有临时的HTML文件
+temp*.html
+test*.html
+demo*.html
+
+# Chrome扩展文件
+*.crx
+
+# Firefox扩展文件
+*.xpi
+
+# Safari扩展文件
+*.safariextz
+
+# Edge扩展文件
+*.appx

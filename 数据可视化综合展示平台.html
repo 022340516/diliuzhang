@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据可视化综合展示平台</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* 导航栏样式 */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        nav li {
+            margin: 0 0.5rem;
+        }
+
+        nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        nav a:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* 主内容区域 */
+        main {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .intro {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .intro h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .intro p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* 图表区域样式 */
+        .chart-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .chart-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .chart-info {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .chart-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .chart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .chart-btn.active {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 450px;
+            width: 100%;
+        }
+
+        /* 图表说明 */
+        .chart-description {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: #555;
+            border-left: 4px solid #667eea;
+        }
+
+        /* 加载动画 */
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(102, 126, 234, 0.3);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav li {
+                margin: 0.2rem 0;
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav>
+        <ul>
+            <li><a href="#chart1">时间序列波动</a></li>
+            <li><a href="#chart2">销量双轴对比</a></li>
+            <li><a href="#chart3">编程语言统计</a></li>
+            <li><a href="#chart4">二次函数曲线</a></li>
+            <li><a href="#chart5">正切函数曲线</a></li>
+        </ul>
+    </nav>
+
+    <!-- 主内容 -->
+    <main>
+        <section class="intro">
+            <h1>数据可视化综合展示平台</h1>
+            <p>专业级数据展示，支持多维度图表切换与交互探索</p>
+        </section>
+
+        <!-- 图表1：时间序列波动图 -->
+        <section id="chart1" class="chart-section">
+            <div class="chart-header">
+                <div>
+                    <h2 class="chart-title">2025年1月1日-2日数值时间序列波动图</h2>
+                    <div class="chart-info">时间范围：2025-01-01 00:00 至 2025-01-02 20:00 | 数值区间：99.5-103.0</div>
+                </div>
+                <div class="chart-controls">
+                    <button class="chart-btn active" onclick="switchChart('chart1', 'line')">折线图</button>
+                    <button class="chart-btn" onclick="switchChart('chart1', 'area')">面积图</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="chart1-canvas"></canvas>
+            </div>
+            <div class="chart-description">
+                <strong>数据说明：</strong>展示连续45小时的时间序列数据，包含凌晨4点和下午16点等关键时间节点的数值变化趋势。
+            </div>
+        </section>
+
+        <!-- 图表2：销量双轴对比图 -->
+        <section id="chart2" class="chart-section">
+            <div class="chart-header">
+                <div>
+                    <h2 class="chart-title">全国总销量与华东区销量月度双轴对比图</h2>
+                    <div class="chart-info">全国销量：50-90区间 | 华东区销量：20-40区间 | 7-9月为旺季峰值</div>
+                </div>
+                <div class="chart-controls">
+                    <button class="chart-btn active" onclick="switchChart('chart2', 'line')">双轴折线</button>
+                    <button class="chart-btn" onclick="switchChart('chart2', 'bar')">柱状图</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="chart2-canvas"></canvas>
+            </div>
+            <div class="chart-description">
+                <strong>业务洞察：</strong>双轴联动展示全国与华东区销售趋势，第三季度明显为销售旺季，华东区占全国销量约35-40%。
+            </div>
+        </section>
+
+        <!-- 图表3：编程语言统计图 -->
+        <section id="chart3" class="chart-section">
+            <div class="chart-header">
+                <div>
+                    <h2 class="chart-title">主流编程语言得票数柱状统计图</h2>
+                    <div class="chart-info">总票数：1510票 | Python领先，JavaScript紧随其后</div>
+                </div>
+                <div class="chart-controls">
+                    <button class="chart-btn active" onclick="switchChart('chart3', 'bar')">柱状图</button>
+                    <button class="chart-btn" onclick="switchChart('chart3', 'horizontalBar')">横向柱状</button>
+                    <button class="chart-btn" onclick="switchChart('chart3', 'pie')">饼图</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="chart3-canvas"></canvas>
+            </div>
+            <div class="chart-description">
+                <strong>市场分析：</strong>Python以29.8%的得票率位居首位，JavaScript占25.2%，显示现代编程语言的生态优势。
+            </div>
+        </section>
+
+        <!-- 图表4：二次函数曲线 -->
+        <section id="chart4" class="chart-section">
+            <div class="chart-header">
+                <div>
+                    <h2 class="chart-title">二次函数(y=x²)（x∈[-2,2]）曲线图</h2>
+                    <div class="chart-info">定义域：[-2,2] | 值域：[0,4] | 关键点：(±2,4), (0,0)</div>
+                </div>
+                <div class="chart-controls">
+                    <button class="chart-btn active" onclick="switchChart('chart4', 'line')">曲线图</button>
+                    <button class="chart-btn" onclick="switchChart('chart4', 'scatter')">散点图</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="chart4-canvas"></canvas>
+            </div>
+            <div class="chart-description">
+                <strong>数学特性：</strong>标准抛物线，对称轴为y轴，顶点在原点(0,0)，在定义域内为单调递增函数。
+            </div>
+        </section>
+
+        <!-- 图表5：正切函数曲线 -->
+        <section id="chart5" class="chart-section">
+            <div class="chart-header">
+                <div>
+                    <h2 class="chart-title">正切函数(y=tan(x))（x∈[-π/2,π/2]）曲线图</h2>
+                    <div class="chart-info">定义域：(-π/2,π/2) | 值域：R | 关键特性：奇函数，单调递增</div>
+                </div>
+                <div class="chart-controls">
+                    <button class="chart-btn active" onclick="switchChart('chart5', 'line')">曲线图</button>
+                    <button class="chart-btn" onclick="switchChart('chart5', 'scatter')">散点图</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="chart5-canvas"></canvas>
+            </div>
+            <div class="chart-description">
+                <strong>数学性质：</strong>在x=±π/2处存在垂直渐近线，函数在定义域内连续且单调递增，过原点(0,0)。
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // 全局图表对象存储
+        const charts = {};
+        
+        // 颜色主题
+        const colorThemes = {
+            primary: ['rgba(102, 126, 234, 1)', 'rgba(118, 75, 162, 1)', 'rgba(240, 147, 251, 1)'],
+            secondary: ['rgba(240, 147, 251, 1)', 'rgba(245, 87, 108, 1)', 'rgba(102, 126, 234, 1)'],
+            gradients: [
+                'rgba(102, 126, 234, 0.8)',
+                'rgba(118, 75, 162, 0.8)',
+                'rgba(240, 147, 251, 0.8)',
+                'rgba(245, 87, 108, 0.8)',
+                'rgba(255, 193, 7, 0.8)',
+                'rgba(40, 167, 69, 0.8)'
+            ]
+        };
+
+        // 生成时间序列数据
+        function generateTimeSeriesData() {
+            const labels = [];
+            const data = [];
+            const startDate = new Date('2025-01-01 00:00:00');
+            const endDate = new Date('2025-01-02 20:00:00');
+            
+            for (let d = new Date(startDate); d <= endDate; d.setHours(d.getHours() + 1)) {
+                labels.push(d.toLocaleString('zh-CN', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }));
+                // 生成合理波动的数据，考虑日夜周期
+                const hour = d.getHours();
+                let baseValue = 101;
+                
+                // 凌晨4点最低，下午16点最高
+                if (hour >= 2 && hour <= 6) {
+                    baseValue = 100.2; // 凌晨低值
+                } else if (hour >= 14 && hour <= 18) {
+                    baseValue = 102.3; // 下午高值
+                } else if (hour >= 20 || hour <= 1) {
+                    baseValue = 100.8; // 夜间中等
+                } else {
+                    baseValue = 101.5; // 白天正常
+                }
+                
+                const fluctuation = (Math.random() - 0.5) * 0.4;
+                const value = baseValue + fluctuation;
+                data.push(Math.min(103, Math.max(99.5, value)));
+            }
+            return { labels, data };
+        }
+
+        // 生成销量数据
+        function generateSalesData() {
+            const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+            const nationalSales = [];
+            const eastChinaSales = [];
+            
+            for (let i = 0; i < 12; i++) {
+                // 7-9月为旺季峰值
+                let seasonalFactor = 1;
+                if (i >= 6 && i <= 8) {
+                    seasonalFactor = 1.4; // 旺季
+                } else if (i >= 0 && i <= 1 || i >= 10 && i <= 11) {
+                    seasonalFactor = 0.8; // 淡季
+                } else {
+                    seasonalFactor = 1.1; // 平季
+                }
+                
+                const baseNational = 70;
+                const baseEast = 30;
+                
+                nationalSales.push(baseNational * seasonalFactor + (Math.random() - 0.5) * 8);
+                eastChinaSales.push(baseEast * seasonalFactor + (Math.random() - 0.5) * 4);
+            }
+            
+            return { months, nationalSales, eastChinaSales };
+        }
+
+        // 生成编程语言数据
+        function getProgrammingLanguageData() {
+            const languages = ['Python', 'JavaScript', 'Java', 'C#', 'Go', 'TypeScript'];
+            const votes = [450, 380, 290, 180, 120, 90];
+            const total = votes.reduce((sum, v) => sum + v, 0);
+            const percentages = votes.map(v => ((v / total) * 100).toFixed(1));
+            
+            return { languages, votes, percentages };
+        }
+
+        // 生成二次函数数据
+        function generateQuadraticData() {
+            const xValues = [];
+            const yValues = [];
+            
+            for (let x = -2; x <= 2; x += 0.05) {
+                xValues.push(x);
+                yValues.push(x * x);
+            }
+            
+            return { xValues, yValues };
+        }
+
+        // 生成正切函数数据
+        function generateTanData() {
+            const xValues = [];
+            const yValues = [];
+            
+            for (let x = -Math.PI/2 + 0.1; x < Math.PI/2 - 0.1; x += 0.05) {
+                const y = Math.tan(x);
+                if (y >= -3 && y <= 3) {
+                    xValues.push(x);
+                    yValues.push(y);
+                }
+            }
+            
+            return { xValues, yValues };
+        }
+
+        // 图表1：时间序列波动图
+        function createChart1(type) {
+            const { labels, data } = generateTimeSeriesData();
+            
+            if (charts.chart1) {
+                charts.chart1.destroy();
+            }
+            
+            const ctx = document.getElementById('chart1-canvas').getContext('2d');
+            charts.chart1 = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '时间序列数值',
+                        data: data,
+                        borderColor: colorThemes.primary[0],
+                        backgroundColor: type === 'area' ? 
+                            'rgba(102, 126, 234, 0.3)' : 
+                            'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        fill: type === 'area',
+                        tension: 0.4,
+                        pointRadius: 3,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: colorThemes.primary[0],
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: { 
+                            display: true, 
+                            position: 'top',
+                            labels: {
+                                font: { size: 14, weight: 'bold' },
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            padding: 15,
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            displayColors: false,
+                            callbacks: {
+                                title: function(context) {
+                                    return `时间: ${context[0].label}`;
+                                },
+                                label: function(context) {
+                                    return `数值: ${context.parsed.y.toFixed(3)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            display: true,
+                            ticks: { 
+                                maxRotation: 45, 
+                                minRotation: 45,
+                                font: { size: 11 }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: { 
+                            display: true,
+                            min: 99.5,
+                            max: 103,
+                            title: {
+                                display: true,
+                                text: '数值',
+                                font: { size: 14, weight: 'bold' }
+                            },
+                            ticks: {
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 图表2：销量双轴对比图
+        function createChart2(type) {
+            const { months, nationalSales, eastChinaSales } = generateSalesData();
+            
+            if (charts.chart2) {
+                charts.chart2.destroy();
+            }
+            
+            const ctx = document.getElementById('chart2-canvas').getContext('2d');
+            
+            const config = type === 'line' ? {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: '全国总销量',
+                            data: nationalSales,
+                            borderColor: colorThemes.primary[0],
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            yAxisID: 'y',
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 5,
+                            pointHoverRadius: 8
+                        },
+                        {
+                            label: '华东区销量',
+                            data: eastChinaSales,
+                            borderColor: colorThemes.secondary[0],
+                            backgroundColor: 'rgba(240, 147, 251, 0.1)',
+                            yAxisID: 'y1',
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 5,
+                            pointHoverRadius: 8
+                        }
+                    ]
+                }
+            } : {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: '全国总销量',
+                            data: nationalSales,
+                            backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                            borderColor: 'rgba(102, 126, 234, 1)',
+                            borderWidth: 2,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '华东区销量',
+                            data: eastChinaSales,
+                            backgroundColor: 'rgba(240, 147, 251, 0.8)',
+                            borderColor: 'rgba(240, 147, 251, 1)',
+                            borderWidth: 2,
+                            yAxisID: 'y1',
+                            type: 'line'
+                        }
+                    ]
+                }
+            };
+            
+            config.options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: { 
+                        display: true, 
+                        position: 'top',
+                        labels: {
+                            font: { size: 14, weight: 'bold' },
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                        padding: 15,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
+                        callbacks: {
+                            title: function(context) {
+                                return `${context[0].label}销量数据`;
+                            },
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}万件`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        min: 50,
+                        max: 90,
+                        title: {
+                            display: true,
+                            text: '全国总销量(万件)',
+                            font: { size: 14, weight: 'bold' },
+                            color: colorThemes.primary[0]
+                        },
+                        ticks: {
+                            color: colorThemes.primary[0]
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        min: 20,
+                        max: 40,
+                        title: {
+                            display: true,
+                            text: '华东区销量(万件)',
+                            font: { size: 14, weight: 'bold' },
+                            color: colorThemes.secondary[0]
+                        },
+                        ticks: {
+                            color: colorThemes.secondary[0]
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: { size: 12 }
+                        }
+                    }
+                }
+            };
+            
+            charts.chart2 = new Chart(ctx, config);
+        }
+
+        // 图表3：编程语言统计图
+        function createChart3(type) {
+            const { languages, votes, percentages } = getProgrammingLanguageData();
+            
+            if (charts.chart3) {
+                charts.chart3.destroy();
+            }
+            
+            const ctx = document.getElementById('chart3-canvas').getContext('2d');
+            
+            let config;
+            
+            if (type === 'pie') {
+                config = {
+                    type: 'pie',
+                    data: {
+                        labels: languages.map((lang, i) => `${lang} (${percentages[i]}%)`),
+                        datasets: [{
+                            data: votes,
+                            backgroundColor: colorThemes.gradients,
+                            borderColor: '#fff',
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    font: { size: 12 },
+                                    padding: 15
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                                padding: 15,
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                        return `得票数: ${context.parsed}票 (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+            } else {
+                config = {
+                    type: type === 'horizontalBar' ? 'bar' : 'bar',
+                    data: {
+                        labels: languages,
+                        datasets: [{
+                            label: '得票数',
+                            data: votes,
+                            backgroundColor: colorThemes.gradients,
+                            borderColor: colorThemes.gradients.map(color => color.replace('0.8', '1')),
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        indexAxis: type === 'horizontalBar' ? 'y' : 'x',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                                padding: 15,
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((context.parsed.y || context.parsed.x) / total * 100).toFixed(1);
+                                        return [
+                                            `得票数: ${context.parsed.y || context.parsed.x}票`,
+                                            `占比: ${percentage}%`
+                                        ];
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { 
+                                display: true,
+                                title: {
+                                    display: type === 'horizontalBar',
+                                    text: type === 'horizontalBar' ? '得票数' : '编程语言',
+                                    font: { size: 14, weight: 'bold' }
+                                },
+                                ticks: {
+                                    font: { size: 12 },
+                                    maxRotation: type === 'horizontalBar' ? 0 : 45,
+                                    minRotation: type === 'horizontalBar' ? 0 : 45
+                                }
+                            },
+                            y: { 
+                                display: true,
+                                title: {
+                                    display: type !== 'horizontalBar',
+                                    text: type !== 'horizontalBar' ? '得票数' : '编程语言',
+                                    font: { size: 14, weight: 'bold' }
+                                },
+                                ticks: {
+                                    font: { size: 12 }
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+            
+            charts.chart3 = new Chart(ctx, config);
+        }
+
+        // 图表4：二次函数曲线
+        function createChart4(type) {
+            const { xValues, yValues } = generateQuadraticData();
+            
+            if (charts.chart4) {
+                charts.chart4.destroy();
+            }
+            
+            const ctx = document.getElementById('chart4-canvas').getContext('2d');
+            
+            charts.chart4 = new Chart(ctx, {
+                type: type === 'scatter' ? 'scatter' : 'line',
+                data: {
+                    labels: type === 'line' ? xValues.map(x => x.toFixed(2)) : undefined,
+                    datasets: [{
+                        label: 'y = x²',
+                        data: type === 'scatter' ? 
+                            xValues.map((x, i) => ({ x: x, y: yValues[i] })) :
+                            yValues,
+                        borderColor: colorThemes.primary[0],
+                        backgroundColor: type === 'scatter' ? 
+                            'rgba(102, 126, 234, 0.8)' :
+                            'rgba(102, 126, 234, 0.2)',
+                        borderWidth: 3,
+                        fill: type === 'line',
+                        tension: 0.4,
+                        pointRadius: type === 'scatter' ? 4 : 0,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            display: true, 
+                            position: 'top',
+                            labels: {
+                                font: { size: 14, weight: 'bold' }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            padding: 15,
+                            callbacks: {
+                                title: function(context) {
+                                    return `函数值`;
+                                },
+                                label: function(context) {
+                                    if (type === 'scatter') {
+                                        return `坐标: (${context.parsed.x.toFixed(2)}, ${context.parsed.y.toFixed(3)})`;
+                                    } else {
+                                        const xIndex = context.dataIndex;
+                                        const x = xValues[xIndex];
+                                        const y = yValues[xIndex];
+                                        return `坐标: (${x.toFixed(2)}, ${y.toFixed(3)})`;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            display: true,
+                            min: -2.2,
+                            max: 2.2,
+                            title: { 
+                                display: true, 
+                                text: 'x', 
+                                font: { size: 14, weight: 'bold' }
+                            },
+                            ticks: {
+                                font: { size: 12 },
+                                callback: function(value) {
+                                    if (value === -2 || value === -1 || value === 0 || value === 1 || value === 2) {
+                                        return value;
+                                    }
+                                    return null;
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        y: { 
+                            display: true,
+                            min: -0.5,
+                            max: 4.5,
+                            title: { 
+                                display: true, 
+                                text: 'y = x²', 
+                                font: { size: 14, weight: 'bold' }
+                            },
+                            ticks: {
+                                font: { size: 12 },
+                                stepSize: 1
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 图表5：正切函数曲线
+        function createChart5(type) {
+            const { xValues, yValues } = generateTanData();
+            
+            if (charts.chart5) {
+                charts.chart5.destroy();
+            }
+            
+            const ctx = document.getElementById('chart5-canvas').getContext('2d');
+            
+            charts.chart5 = new Chart(ctx, {
+                type: type === 'scatter' ? 'scatter' : 'line',
+                data: {
+                    labels: type === 'line' ? xValues.map(x => x.toFixed(3)) : undefined,
+                    datasets: [{
+                        label: 'y = tan(x)',
+                        data: type === 'scatter' ? 
+                            xValues.map((x, i) => ({ x: x, y: yValues[i] })) :
+                            yValues,
+                        borderColor: colorThemes.secondary[0],
+                        backgroundColor: type === 'scatter' ? 
+                            'rgba(240, 147, 251, 0.8)' :
+                            'rgba(240, 147, 251, 0.2)',
+                        borderWidth: 3,
+                        fill: type === 'line',
+                        tension: 0.4,
+                        pointRadius: type === 'scatter' ? 4 : 0,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: 'rgba(240, 147, 251, 0.8)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            display: true, 
+                            position: 'top',
+                            labels: {
+                                font: { size: 14, weight: 'bold' }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            padding: 15,
+                            callbacks: {
+                                title: function(context) {
+                                    return `正切函数值`;
+                                },
+                                label: function(context) {
+                                    if (type === 'scatter') {
+                                        return `坐标: (${context.parsed.x.toFixed(3)}, ${context.parsed.y.toFixed(3)})`;
+                                    } else {
+                                        const xIndex = context.dataIndex;
+                                        const x = xValues[xIndex];
+                                        const y = yValues[xIndex];
+                                        return `坐标: (${x.toFixed(3)}, ${y.toFixed(3)})`;
+                                    }
+                                },
+                                afterBody: function(context) {
+                                    const x = context[0].parsed.x;
+                                    const pi = Math.PI;
+                                    if (Math.abs(x) < 0.01) {
+                                        return '\n定义域: (-π/2, π/2)\n值域: (-∞, +∞)';
+                                    }
+                                    return '';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            display: true,
+                            min: -Math.PI/2 - 0.1,
+                            max: Math.PI/2 + 0.1,
+                            title: { 
+                                display: true, 
+                                text: 'x (弧度)', 
+                                font: { size: 14, weight: 'bold' }
+                            },
+                            ticks: {
+                                font: { size: 12 },
+                                callback: function(value) {
+                                    const pi = Math.PI;
+                                    if (Math.abs(value - (-pi/2)) < 0.1) return '-π/2';
+                                    if (Math.abs(value - (pi/2)) < 0.1) return 'π/2';
+                                    if (Math.abs(value - (-pi/4)) < 0.1) return '-π/4';
+                                    if (Math.abs(value - (pi/4)) < 0.1) return 'π/4';
+                                    if (Math.abs(value) < 0.1) return '0';
+                                    return null;
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        y: { 
+                            display: true,
+                            min: -3.5,
+                            max: 3.5,
+                            title: { 
+                                display: true, 
+                                text: 'y = tan(x)', 
+                                font: { size: 14, weight: 'bold' }
+                            },
+                            ticks: {
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 切换图表类型
+        function switchChart(chartId, type) {
+            // 更新按钮状态
+            const buttons = document.querySelectorAll(`#${chartId} .chart-btn`);
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 重新创建图表
+            switch(chartId) {
+                case 'chart1':
+                    createChart1(type);
+                    break;
+                case 'chart2':
+                    createChart2(type);
+                    break;
+                case 'chart3':
+                    createChart3(type);
+                    break;
+                case 'chart4':
+                    createChart4(type);
+                    break;
+                case 'chart5':
+                    createChart5(type);
+                    break;
+            }
+        }
+
+        // 平滑滚动到目标图表
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 页面加载完成后初始化所有图表
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面加载完成，开始初始化图表...');
+            
+            try {
+                createChart1('line');
+                createChart2('line');
+                createChart3('bar');
+                createChart4('line');
+                createChart5('line');
+                console.log('所有图表初始化成功！');
+            } catch (error) {
+                console.error('图表初始化失败:', error);
+            }
+        });
+
+        // 响应式处理
+        window.addEventListener('resize', function() {
+            Object.values(charts).forEach(chart => {
+                if (chart) chart.resize();
+            });
+        });
+    </script>
+</body>
+</html>

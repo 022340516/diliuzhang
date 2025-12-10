@@ -1,0 +1,503 @@
+/**
+ * 数据可视化综合展示平台 - CSS样式文件
+ * 专业的现代化设计和动画效果
+ */
+
+/* 全局样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 基础样式 */
+body {
+    font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 导航栏样式 */
+nav {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 1rem 0;
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+nav li {
+    margin: 0 0.5rem;
+}
+
+nav a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+}
+
+nav a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+    z-index: -1;
+}
+
+nav a:hover::before {
+    width: 100%;
+}
+
+nav a:hover {
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* 主内容区域 */
+main {
+    margin-top: 80px;
+    padding: 2rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 介绍区域 */
+.intro {
+    text-align: center;
+    color: white;
+    margin-bottom: 3rem;
+    animation: fadeInUp 1s ease;
+}
+
+.intro h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.intro p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* 图表区域样式 */
+.chart-section {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.8s ease backwards;
+}
+
+.chart-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.chart-section:hover::before {
+    opacity: 1;
+}
+
+.chart-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* 图表头部 */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.chart-title {
+    font-size: 1.5rem;
+    color: #667eea;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.chart-info {
+    font-size: 0.9rem;
+    color: #666;
+    opacity: 0.8;
+}
+
+/* 图表控制按钮 */
+.chart-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.chart-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    font-weight: 500;
+}
+
+.chart-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.chart-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.chart-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.chart-btn:active {
+    transform: scale(0.98);
+}
+
+.chart-btn.active {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+}
+
+/* 图表容器 */
+.chart-container {
+    position: relative;
+    height: 450px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+/* 图表说明 */
+.chart-description {
+    margin-top: 1rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(240, 147, 251, 0.1));
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: #555;
+    border-left: 4px solid #667eea;
+    transition: all 0.3s ease;
+}
+
+.chart-description:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(240, 147, 251, 0.15));
+    transform: translateX(5px);
+}
+
+.chart-description strong {
+    color: #667eea;
+    font-weight: 600;
+}
+
+/* 加载动画 */
+.loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(102, 126, 234, 0.3);
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* 淡入动画 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 为不同图表部分添加延迟动画 */
+.chart-section:nth-child(1) { animation-delay: 0.1s; }
+.chart-section:nth-child(2) { animation-delay: 0.2s; }
+.chart-section:nth-child(3) { animation-delay: 0.3s; }
+.chart-section:nth-child(4) { animation-delay: 0.4s; }
+.chart-section:nth-child(5) { animation-delay: 0.5s; }
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    main {
+        padding: 1.5rem;
+    }
+    
+    .chart-container {
+        height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        padding: 0.5rem 0;
+    }
+    
+    nav li {
+        margin: 0.2rem 0;
+        width: 100%;
+        text-align: center;
+    }
+    
+    nav a {
+        display: block;
+        padding: 0.8rem;
+    }
+    
+    main {
+        margin-top: 120px;
+        padding: 1rem;
+    }
+    
+    .intro h1 {
+        font-size: 2rem;
+    }
+    
+    .intro p {
+        font-size: 1rem;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .chart-controls {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .chart-container {
+        height: 350px;
+    }
+    
+    .chart-section {
+        padding: 1.5rem;
+    }
+    
+    .chart-title {
+        font-size: 1.2rem;
+    }
+    
+    .chart-btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        padding: 0.5rem;
+    }
+    
+    .chart-container {
+        height: 300px;
+        padding: 0.5rem;
+    }
+    
+    .chart-section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .chart-title {
+        font-size: 1.1rem;
+    }
+    
+    .chart-description {
+        padding: 0.8rem 1rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    }
+    
+    .chart-section {
+        background: rgba(45, 55, 72, 0.95);
+        color: #e2e8f0;
+    }
+    
+    .chart-title {
+        color: #90cdf4;
+    }
+    
+    .chart-info {
+        color: #a0aec0;
+    }
+    
+    .chart-description {
+        background: linear-gradient(135deg, rgba(144, 205, 244, 0.1), rgba(159, 122, 234, 0.1));
+        color: #cbd5e0;
+        border-left-color: #90cdf4;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    nav {
+        display: none;
+    }
+    
+    main {
+        margin-top: 0;
+        padding: 0;
+    }
+    
+    .intro {
+        margin-bottom: 1rem;
+    }
+    
+    .chart-section {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+        margin-bottom: 1rem;
+    }
+    
+    .chart-controls {
+        display: none;
+    }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+    .chart-section {
+        border: 2px solid #000;
+    }
+    
+    nav a {
+        border: 2px solid #667eea;
+    }
+    
+    .chart-btn {
+        border: 2px solid #000;
+    }
+}
+
+/* 减少动画模式 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 焦点样式 */
+button:focus,
+a:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* 选择文本样式 */
+::selection {
+    background: rgba(102, 126, 234, 0.3);
+    color: #333;
+}
+
+::-moz-selection {
+    background: rgba(102, 126, 234, 0.3);
+    color: #333;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.8);
+}
